@@ -1,0 +1,88 @@
+name: "Run Splunk-App-Common-Utilities Action"
+description: "Splunk App's Common Utilities add via Splunk action in any GitHub repository. This will just create the PR and not update the repo directly."
+
+branding:
+  color: "blue"
+  icon: "layers"
+
+
+inputs:
+  app_dir:
+    description: "Provide app directory. Do not provide the value if the repo's root directory itself if app directory."
+    required: false
+    default: "."
+
+  main_branch_name:
+    description: "What is the default branch to create PR from."
+    required: false
+    default: "main"
+
+
+  utilities_to_add:
+    description: "What utilities to add to the App. User can add comma separated values. Options: logger"
+    required: true
+
+
+  log_files_prefix:
+    description: "All Log files Prefix. Required in case of utility_to_add=logger"
+    required: false
+    default: "NONE"
+  logger_sourcetype:
+    description: "Sourcetype for the logs in the internal logs. Used with utility_to_add=logger"
+    required: false
+    default: "NONE"
+
+
+outputs:
+  stdout:
+    description: "Program stdout"
+  stderr:
+    description: "Program stderr"
+  error:
+    description: "A string of 'true' or 'false' that tells if there were errors."
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Extracting the current branch name"
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
+    - name: "Clone the Repository"
+      uses: actions/checkout@v2
+      with:
+          ref: ${{ steps.extract_branch.outputs.branch }}
+          path: repodir
+
+    - name: "Install Python"
+      uses: actions/setup-python@v2
+
+    - name: Installing Python Dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: "Pre-tasks"
+      shell: bash
+      run: |
+        pwd
+        echo "=== Inputs ==="
+        echo "app_dir -> ${{inputs.app_dir}}"
+        echo "main_branch_name -> ${{inputs.main_branch_name}}
+        echo "utilities_to_add -> ${{inputs.utilities_to_add}}"
+        echo "log_files_prefix -> ${{inputs.log_files_prefix}}"
+        echo "logger_sourcetype -> ${{inputs.logger_sourcetype}}"
+
+    - name: "Running Github Action for Splunk App Utilities"
+      shell: bash
+      env:
+        SPLUNK_app_dir: ${{inputs.app_dir}}
+        SPLUNK_main_branch_name: ${{inputs.main_branch_name}}
+        SPLUNK_utilities_to_add: ${{inputs.utilities_to_add}}
+        SPLUNK_log_files_prefix: ${{inputs.log_files_prefix}}
+        SPLUNK_logger_sourcetype: ${{inputs.logger_sourcetype}}
+      run: |
+        python -u ${{ github.action_path }}/main.py
