@@ -1,9 +1,10 @@
 import os
 import configparser
+import pathlib
 
 
 class BaseFileHandler:
-    def __init__(self, input_file_path, output_file_path, words_for_replacement) -> None:
+    def __init__(self, input_file_path, output_file_path, words_for_replacement=dict(), create_directory_structure_if_not_exist=True) -> None:
         self.input_file_path = input_file_path
         self.output_file_path = output_file_path
         self.words_for_replacement = words_for_replacement
@@ -17,6 +18,11 @@ class BaseFileHandler:
             input_content = input_content.replace(word, replacement)
 
         return input_content
+    
+    def create_output_directory_path_if_not_exist(self):
+        output_dir_path = os.path.dirname(self.output_file_path)
+        pathlib.Path(output_dir_path).mkdir(parents=True, exist_ok=True)
+
 
 
 
@@ -58,6 +64,7 @@ class ConfigFileHandler(BaseFileHandler):
                     self._util_write_config_option(output_parser, sect, key, value)
         
         if is_changed:
+            self.create_output_directory_path_if_not_exist()
             fp=open(self.output_file_path, 'w')
             output_parser.write(fp)
             fp.close()
@@ -75,5 +82,6 @@ class RawFileHandler(BaseFileHandler):
                 already_present_file_content = fr.read()
 
         if already_present_file_content != input_content:
+            self.create_output_directory_path_if_not_exist()
             with open(self.output_file_path, 'w') as fw:
                 fw.write(input_content)
