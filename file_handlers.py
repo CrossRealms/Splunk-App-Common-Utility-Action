@@ -7,14 +7,14 @@ class BaseFileHandler:
     def __init__(self, input_file_path, output_file_path, words_for_replacement=dict(), create_directory_structure_if_not_exist=True) -> None:
         self.input_file_path = input_file_path
         self.output_file_path = output_file_path
-        self.words_for_replacement = words_for_replacement
+        self.words_for_replacement: dict = words_for_replacement
 
     def get_input_file_content(self):
         input_content = None
         with open(self.input_file_path, 'r') as fr:
             input_content = fr.read()
         
-        for word, replacement in self.words_for_replacement:
+        for word, replacement in self.words_for_replacement.items():
             input_content = input_content.replace(word, replacement)
 
         return input_content
