@@ -6,7 +6,7 @@ import os
 # Splunk imports
 from splunk.clilib.bundle_paths import make_splunkhome_path
 
-app_package_name = '<<<log_files_prefix>>>'
+log_file_prefix = '<<<log_files_prefix>>>'
 
 
 def setup_logging(log_name, log_level=logging.INFO):
@@ -16,7 +16,7 @@ def setup_logging(log_name, log_level=logging.INFO):
     :param log_level: log level, a string
     :return: a logger object
     """
-    log_name = '{}_{}'.format(app_package_name, log_name)
+    log_name = '{}_{}'.format(log_file_prefix, log_name)
     # Make path till log file (current dir (app/<app-name>/bin))
     # log_dir = os.path.dirname(os.path.abspath(__file__))
     # log_file = os.path.join(log_dir, "%s.log" % log_name)
