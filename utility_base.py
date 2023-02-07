@@ -5,14 +5,15 @@ import utils
 
 
 class BaseSplunkAppUtility:
-    def __init__(self, github_action_dir, app_package_dir, main_branch_name) -> None:
+    def __init__(self, github_action_dir, app_package_dir, main_branch_name, local_test=False) -> None:
         self.GITHUB_ACTION_DIR = github_action_dir
         self.APP_PACKAGE_DIR = app_package_dir
 
         self.add_utility()
         current_datetime = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         new_branch = 'splunk_app_utility_change_{}'.format(current_datetime)
-        self.create_github_pr(main_branch_name, new_branch)
+        if not local_test:
+            self.create_github_pr(main_branch_name, new_branch)
 
 
     def create_github_pr(self, main_branch, new_branch):
