@@ -36,11 +36,12 @@ class ConfigFileHandler(BaseFileHandler):
 
     def validate_config(self):
         input_content = self.get_input_file_content()
-        with open(self.output_file_path, 'w') as f:
+        temp_file = '{}_temp'.format(self.input_file_path)
+        with open(temp_file, 'w') as f:
             f.write(input_content)
 
         input_parser = configparser.ConfigParser()
-        input_parser.read(self.input_file_path)
+        input_parser.read(temp_file)
 
         already_present_file_parser = None
         if os.path.isfile(self.output_file_path):
