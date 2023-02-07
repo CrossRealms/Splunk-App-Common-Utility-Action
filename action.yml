@@ -55,6 +55,12 @@ runs:
       with:
           ref: ${{ steps.extract_branch.outputs.branch }}
           path: repodir
+    
+    - name: "Print current directory for troubleshooting."
+      shell: bash
+      run: |
+        cwd
+        ls -l
 
     - name: "Install Python"
       uses: actions/setup-python@v2
