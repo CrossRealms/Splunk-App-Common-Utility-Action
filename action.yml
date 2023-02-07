@@ -59,7 +59,7 @@ runs:
     - name: "Print current directory for troubleshooting."
       shell: bash
       run: |
-        cwd
+        pwd
         ls -l
 
     - name: "Install Python"
