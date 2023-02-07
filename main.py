@@ -52,7 +52,7 @@ def perform_local_test(utility_to_test):
         utils.test_set_input('logger_sourcetype', 'test:app1:logs')
         utils.test_set_input('log_files_prefix', 'test_app1')
 
-    main()
+    main(local_test=True)
 
 
 
