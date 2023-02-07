@@ -15,7 +15,7 @@ class BaseSplunkAppUtility:
         self.create_github_pr(main_branch_name, new_branch)
 
 
-    def create_github_pr(main_branch, new_branch):
+    def create_github_pr(self, main_branch, new_branch):
         # checkout main branch
         os.system(r'git checkout {}'.format(main_branch))
 

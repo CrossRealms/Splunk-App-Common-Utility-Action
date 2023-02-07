@@ -8,9 +8,11 @@ class LoggerUtility(BaseSplunkAppUtility):
 
     def add_utility(self):
         log_files_prefix = utils.get_input('log_files_prefix')
+        log_files_prefix = 'test_app1'
         utils.info("log_files_prefix: {}".format(log_files_prefix))
         
         logger_sourcetype = utils.get_input('logger_sourcetype')
+        logger_sourcetype = 'test:app1:logs'
         utils.info("logger_sourcetype: {}".format(logger_sourcetype))
 
         self.words_for_replacement = {

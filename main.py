@@ -10,15 +10,18 @@ GITHUB_ACTION_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 app_dir = utils.get_input('app_dir')
+app_dir = 'test_app1'
 utils.info("app_dir: {}".format(app_dir))
 
 main_branch_name = utils.get_input('main_branch_name')
 utils.info("main_branch_name: {}".format(main_branch_name))
+main_branch_name = 'main'
 
 APP_PACKAGE_DIR = os.path.join('repodir', app_dir)
 
 
 utilities_to_add = utils.get_input('utilities_to_add')
+utilities_to_add = 'logger'
 utils.info("utilities_to_add: {}".format(utilities_to_add))
 
 
