@@ -32,6 +32,10 @@ def get_input(name):
     return val
 
 
+def test_set_input(name, value):
+    os.environ["SPLUNK_{}".format(name)] = value
+
+
 def set_env(name, value):
     # os.environ[name] = value   # this does not work with github action
     # ret_code = os.system('export {}={}'.format(name, value))   # this does not work with github action
