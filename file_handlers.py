@@ -34,28 +34,33 @@ class ConfigFileHandler(BaseFileHandler):
         writer_parser.set(sect, key, value)
 
 
+    def get_config_parser_object(self):
+        config = configparser.ConfigParser(interpolation=None)
+        # config.optionxform = str
+        config.optionxform = lambda option: option
+        return config
+
+
     def validate_config(self):
         input_content = self.get_input_file_content()
         temp_file = '{}_temp'.format(self.input_file_path)
         with open(temp_file, 'w') as f:
             f.write(input_content)
 
-        input_parser = configparser.ConfigParser(interpolation=None)
+        input_parser = self.get_config_parser_object()
         input_parser.read(temp_file)
 
-        already_present_file_parser = None
+        output_parser = self.get_config_parser_object()
         if os.path.isfile(self.output_file_path):
-            already_present_file_parser = configparser.ConfigParser(interpolation=None)
-            already_present_file_parser.read(self.output_file_path)
-
-        output_parser = configparser.ConfigParser(interpolation=None)
+            output_parser.read(self.output_file_path)
 
         is_changed = False
 
         for sect in input_parser.sections():
             for key, value in input_parser.items(sect):
+                # print("stanza={} - key={} - value={}".format(sect, key, value))
                 try:
-                    already_present_value = already_present_file_parser.get(sect, key)
+                    already_present_value = output_parser.get(sect, key)
                     if already_present_value != value:
                         is_changed = True
                         self._util_write_config_option(output_parser, sect, key, value)
@@ -64,6 +69,7 @@ class ConfigFileHandler(BaseFileHandler):
                     self._util_write_config_option(output_parser, sect, key, value)
         
         if is_changed:
+            print("File changed - file={}".format(self.output_file_path))
             self.create_output_directory_path_if_not_exist()
             fp=open(self.output_file_path, 'w')
             output_parser.write(fp)
@@ -82,6 +88,7 @@ class RawFileHandler(BaseFileHandler):
                 already_present_file_content = fr.read()
 
         if already_present_file_content != input_content:
+            print("File changed - file={}".format(self.output_file_path))
             self.create_output_directory_path_if_not_exist()
             with open(self.output_file_path, 'w') as fw:
                 fw.write(input_content)
