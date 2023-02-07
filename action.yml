@@ -70,7 +70,7 @@ runs:
         pwd
         echo "=== Inputs ==="
         echo "app_dir -> ${{inputs.app_dir}}"
-        echo "main_branch_name -> ${{inputs.main_branch_name}}
+        echo "main_branch_name -> ${{inputs.main_branch_name}}"
         echo "utilities_to_add -> ${{inputs.utilities_to_add}}"
         echo "log_files_prefix -> ${{inputs.log_files_prefix}}"
         echo "logger_sourcetype -> ${{inputs.logger_sourcetype}}"
