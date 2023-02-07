@@ -55,12 +55,6 @@ runs:
       with:
           ref: ${{ steps.extract_branch.outputs.branch }}
           path: repodir
-    
-    - name: "Print current directory for troubleshooting."
-      shell: bash
-      run: |
-        pwd
-        ls -l
 
     - name: "Install Python"
       uses: actions/setup-python@v2
@@ -69,7 +63,7 @@ runs:
       shell: bash
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r ${{ github.action_path }}/requirements.txt
 
     - name: "Pre-tasks"
       shell: bash
