@@ -56,6 +56,6 @@ def perform_local_test(utility_to_test):
 
 
 
-# main()
+main()
 
-perform_local_test(utility_to_test='logger')
+# perform_local_test(utility_to_test='logger')
