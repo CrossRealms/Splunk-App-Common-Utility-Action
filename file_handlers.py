@@ -40,15 +40,15 @@ class ConfigFileHandler(BaseFileHandler):
         with open(temp_file, 'w') as f:
             f.write(input_content)
 
-        input_parser = configparser.ConfigParser()
+        input_parser = configparser.ConfigParser(interpolation=None)
         input_parser.read(temp_file)
 
         already_present_file_parser = None
         if os.path.isfile(self.output_file_path):
-            already_present_file_parser = configparser.ConfigParser()
+            already_present_file_parser = configparser.ConfigParser(interpolation=None)
             already_present_file_parser.read(self.output_file_path)
 
-        output_parser = configparser.ConfigParser()
+        output_parser = configparser.ConfigParser(interpolation=None)
 
         is_changed = False
 
