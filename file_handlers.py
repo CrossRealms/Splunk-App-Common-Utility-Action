@@ -54,7 +54,6 @@ class ConfigFileHandler(BaseFileHandler):
 
         for sect in input_parser.sections():
             for key, value in input_parser.items(sect):
-                print("stanza={}, key={}, value={}".format(sect, key, value))
                 try:
                     already_present_value = already_present_file_parser.get(sect, key)
                     if already_present_value != value:
