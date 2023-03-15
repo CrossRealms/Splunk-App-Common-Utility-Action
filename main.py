@@ -11,7 +11,7 @@ GITHUB_ACTION_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # This is just for testing
 utils.info("Files under current working directory:- {}".format(os.getcwd()))
-utils.list_files(os.path.dirname(os.path.dirname(os.getcwd())))
+utils.list_files(os.path.dirname(os.path.dirname(os.getcwd())), max_level=5)
 
 
 def main(local_test=False):

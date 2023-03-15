@@ -3,12 +3,11 @@ from datetime import datetime
 
 
 # Debug function
-def list_files(startpath):
+def list_files(startpath, max_level=3):
     for root, dirs, files in os.walk(startpath):
         level = root.replace(startpath, '').count(os.sep)
 
-        # only until level 2
-        if level > 2:
+        if level > max_level:
             continue
 
         indent = ' ' * 4 * (level)
