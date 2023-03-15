@@ -12,6 +12,7 @@ class BaseSplunkAppUtility:
         self.add_utility()
         _hash = utils.get_file_hash(self.get_file_to_generate_hash())
         new_branch = 'splunk_app_utility_change_{}_{}'.format(self.__class__.__name__, _hash)
+        utils.info("Branch Name: {}".format(new_branch))
         if not local_test:
             os.chdir(self.REPO_DIR)
             if self.check_branch_does_not_exist(new_branch):
@@ -24,6 +25,7 @@ class BaseSplunkAppUtility:
     def check_branch_does_not_exist(self, branch_name):
         # https://stackoverflow.com/questions/5167957/is-there-a-better-way-to-find-out-if-a-local-git-branch-exists
         os.system('git fetch')
+        utils.debug("Checking whether git branch already present or not.")
         ret_code = os.system('git rev-parse --verify {}'.format(branch_name))
         if ret_code != 0:
             return True
@@ -40,6 +42,7 @@ class BaseSplunkAppUtility:
 
 
     def create_github_pr(self, main_branch, new_branch):
+        utils.debug("Committing the code and creating PR.")
         # checkout main branch
         os.system(r'git checkout {}'.format(main_branch))
 
