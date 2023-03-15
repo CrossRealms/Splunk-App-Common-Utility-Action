@@ -11,9 +11,16 @@ class BaseSplunkAppUtility:
 
         self.add_utility()
         current_datetime = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        new_branch = 'splunk_app_utility_change_{}'.format(current_datetime)
+        new_branch = 'splunk_app_utility_change_{}_'.format(__class__.__name__)
         if not local_test:
-            self.create_github_pr(main_branch_name, new_branch)
+            # self.create_github_pr(main_branch_name, new_branch)
+            pass
+
+
+    def _get_latest_commit_hash_from_this_repo(self):
+        # git log -n 1 --pretty=format:"%H"
+        # git rev-parse --short HEAD
+        pass
 
 
     def create_github_pr(self, main_branch, new_branch):
