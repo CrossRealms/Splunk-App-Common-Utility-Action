@@ -1,6 +1,5 @@
 
 import os
-from datetime import datetime
 import utils
 
 
@@ -10,17 +9,18 @@ class BaseSplunkAppUtility:
         self.APP_PACKAGE_DIR = app_package_dir
 
         self.add_utility()
-        current_datetime = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        new_branch = 'splunk_app_utility_change_{}_'.format(__class__.__name__)
+        _hash = utils.get_file_hash(self.get_file_to_generate_hash())
+        new_branch = 'splunk_app_utility_change_{}_'.format(__class__.__name__, _hash)
         if not local_test:
-            # self.create_github_pr(main_branch_name, new_branch)
-            pass
+            if self.check_branch_does_not_exist(new_branch):
+                self.create_github_pr(main_branch_name, new_branch)
+            else:
+                utils.info("Branch already present.")
 
 
-    def _get_latest_commit_hash_from_this_repo(self):
-        # git log -n 1 --pretty=format:"%H"
-        # git rev-parse --short HEAD
-        pass
+    def check_branch_does_not_exist(branch_name):
+        # https://stackoverflow.com/questions/5167957/is-there-a-better-way-to-find-out-if-a-local-git-branch-exists
+        return True
 
 
     def create_github_pr(self, main_branch, new_branch):
@@ -34,7 +34,7 @@ class BaseSplunkAppUtility:
         os.system(r'git add -A')
 
         # Commit changes
-        os.system(r'git commit -m "Splunk App Utility Updated by Github Action."')
+        os.system(r'git commit -m "Splunk App Utility Updated by Github Action ({})"'.format(new_branch))
 
         # Push branch on github
         return_value = os.system(r'git push -u origin {}'.format(new_branch))

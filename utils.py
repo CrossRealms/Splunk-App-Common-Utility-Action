@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import hashlib
 
 
 # Debug function
@@ -98,3 +99,11 @@ def save_state(name, value):
 def _escape_data(value: str):
     return value.replace("%", "%25").replace("\r", "%0D")
     # .replace("\n", "%0A")
+
+
+def get_file_hash(file_path):
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()

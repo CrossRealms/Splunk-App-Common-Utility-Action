@@ -6,6 +6,10 @@ import file_handlers
 
 class LoggerUtility(BaseSplunkAppUtility):
 
+    def get_file_to_generate_hash(self):
+        return os.path.join(self.GITHUB_ACTION_DIR, 'logger', 'logger_manager.py')
+
+
     def add_utility(self):
         log_files_prefix = utils.get_input('log_files_prefix')
         utils.info("log_files_prefix: {}".format(log_files_prefix))
