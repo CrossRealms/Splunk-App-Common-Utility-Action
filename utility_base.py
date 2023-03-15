@@ -15,6 +15,7 @@ class BaseSplunkAppUtility:
         if not local_test:
             os.chdir(self.REPO_DIR)
             if self.check_branch_does_not_exist(new_branch):
+                self.configure_git()
                 self.create_github_pr(main_branch_name, new_branch)
             else:
                 utils.info("Branch already present.")
@@ -23,6 +24,15 @@ class BaseSplunkAppUtility:
     def check_branch_does_not_exist(self, branch_name):
         # https://stackoverflow.com/questions/5167957/is-there-a-better-way-to-find-out-if-a-local-git-branch-exists
         return True
+
+
+    def configure_git(self):
+        if not os.environ.get("GITHUB_TOKEN"):
+            raise ValueError("Please configure the GitHub Token in GH_TOKEN environment secret for actions in the Repo Settings.")
+
+        os.system(r'gh auth setup-git')
+        os.system(r'git config user.name SplunkAppUtilityAction')
+        os.system(r'git config user.email splunkapputilityaction@crossrealms.com')
 
 
     def create_github_pr(self, main_branch, new_branch):
