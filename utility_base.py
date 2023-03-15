@@ -23,7 +23,10 @@ class BaseSplunkAppUtility:
 
     def check_branch_does_not_exist(self, branch_name):
         # https://stackoverflow.com/questions/5167957/is-there-a-better-way-to-find-out-if-a-local-git-branch-exists
-        return True
+        ret_code = os.system('git rev-parse --verify {}'.format(branch_name))
+        if ret_code == 0:
+            return True
+        return False
 
 
     def configure_git(self):
