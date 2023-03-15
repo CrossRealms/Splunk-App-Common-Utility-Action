@@ -7,6 +7,7 @@ from utility_logger import LoggerUtility
 
 
 GITHUB_ACTION_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_DIR = os.path.join(os.getcwd(), 'repodir')
 
 
 # This is just for testing
@@ -21,7 +22,7 @@ def main(local_test=False):
     main_branch_name = utils.get_input('main_branch_name')
     utils.info("main_branch_name: {}".format(main_branch_name))
 
-    app_package_dir = os.path.join('repodir', app_dir)
+    app_package_dir = os.path.join(REPO_DIR, app_dir)
 
 
     utilities_to_add = utils.get_input('utilities_to_add')
@@ -33,7 +34,7 @@ def main(local_test=False):
 
     for utility in utilities:
         if utility == "logger":
-            LoggerUtility(GITHUB_ACTION_DIR, app_package_dir, main_branch_name, local_test=local_test)
+            LoggerUtility(GITHUB_ACTION_DIR, REPO_DIR, app_package_dir, main_branch_name, local_test=local_test)
         else:
             utils.error("utility={} is not supported.".format(utility))
 

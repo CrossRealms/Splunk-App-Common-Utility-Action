@@ -4,7 +4,7 @@ import hashlib
 
 
 # Debug function
-def list_files(startpath, max_level=3):
+def list_files(startpath, max_level=5):
     for root, dirs, files in os.walk(startpath):
         level = root.replace(startpath, '').count(os.sep)
 

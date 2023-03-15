@@ -4,14 +4,16 @@ import utils
 
 
 class BaseSplunkAppUtility:
-    def __init__(self, github_action_dir, app_package_dir, main_branch_name, local_test=False) -> None:
+    def __init__(self, github_action_dir, repo_dir, app_package_dir, main_branch_name, local_test=False) -> None:
         self.GITHUB_ACTION_DIR = github_action_dir
+        self.REPO_DIR = repo_dir
         self.APP_PACKAGE_DIR = app_package_dir
 
         self.add_utility()
         _hash = utils.get_file_hash(self.get_file_to_generate_hash())
-        new_branch = 'splunk_app_utility_change_{}_'.format(__class__.__name__, _hash)
+        new_branch = 'splunk_app_utility_change_{}_{}'.format(__class__.__name__, _hash)
         if not local_test:
+            os.chdir(self.REPO_DIR)
             if self.check_branch_does_not_exist(new_branch):
                 self.create_github_pr(main_branch_name, new_branch)
             else:
