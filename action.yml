@@ -78,7 +78,7 @@ runs:
     - name: "Running Github Action for Splunk App Utilities"
       shell: bash
       env:
-        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+        GITHUB_TOKEN: ${{inputs.GH_TOKEN}}
         SPLUNK_app_dir: ${{inputs.app_dir}}
         SPLUNK_main_branch_name: ${{inputs.main_branch_name}}
         SPLUNK_utilities_to_add: ${{inputs.utilities_to_add}}
