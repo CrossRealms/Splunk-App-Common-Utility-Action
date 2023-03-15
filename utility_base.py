@@ -11,7 +11,7 @@ class BaseSplunkAppUtility:
 
         self.add_utility()
         _hash = utils.get_file_hash(self.get_file_to_generate_hash())
-        new_branch = 'splunk_app_utility_change_{}_{}'.format(__class__.__name__, _hash)
+        new_branch = 'splunk_app_utility_change_{}_{}'.format(self.__class__.__name__, _hash)
         if not local_test:
             os.chdir(self.REPO_DIR)
             if self.check_branch_does_not_exist(new_branch):
@@ -49,7 +49,7 @@ class BaseSplunkAppUtility:
         os.system(r'git add -A')
 
         # Commit changes
-        os.system(r'git commit -m "Splunk App Utility Updated by Github Action ({})"'.format(new_branch))
+        os.system(r'git commit -m "{}"'.format(new_branch))
 
         # Push branch on github
         return_value = os.system(r'git push -u origin {}'.format(new_branch))
