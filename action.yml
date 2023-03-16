@@ -19,7 +19,7 @@ inputs:
 
 
   utilities_to_add:
-    description: "What utilities to add to the App. User can add comma separated values. Options: logger"
+    description: "What utilities to add to the App. User can add comma separated values. Options: logger, common_splunk_js_utilities"
     required: true
 
 

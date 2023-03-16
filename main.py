@@ -4,6 +4,7 @@ sys.path.append(os.path.dirname(__file__))
 
 import utils
 from utility_logger import LoggerUtility
+from utility_common_splunk_js_utilities import CommonSplunkJSUtility
 
 
 GITHUB_ACTION_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +13,7 @@ REPO_DIR = os.path.join(os.getcwd(), 'repodir')
 
 # This is just for testing
 utils.info("Files under current working directory:- {}".format(os.getcwd()))
-utils.list_files(os.path.dirname(os.getcwd()))
+# utils.list_files(os.path.dirname(os.getcwd()))
 
 
 def main(local_test=False):
@@ -24,7 +25,6 @@ def main(local_test=False):
 
     app_package_dir = os.path.join(REPO_DIR, app_dir)
 
-
     utilities_to_add = utils.get_input('utilities_to_add')
     utils.info("utilities_to_add: {}".format(utilities_to_add))
 
@@ -35,6 +35,8 @@ def main(local_test=False):
     for utility in utilities:
         if utility == "logger":
             LoggerUtility(GITHUB_ACTION_DIR, REPO_DIR, app_package_dir, main_branch_name, local_test=local_test)
+        elif utility == "common_splunk_js_utilities":
+            CommonSplunkJSUtility(GITHUB_ACTION_DIR, REPO_DIR, app_package_dir, main_branch_name, local_test=local_test)
         else:
             utils.error("utility={} is not supported.".format(utility))
 
@@ -59,4 +61,4 @@ def perform_local_test(utility_to_test):
 
 main()
 
-# perform_local_test(utility_to_test='logger')
+# perform_local_test(utility_to_test='logger,common_splunk_js_utilities')

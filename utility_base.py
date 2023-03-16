@@ -13,7 +13,7 @@ class BaseSplunkAppUtility:
         new_branch = 'splunk_app_utility_change_{}_{}'.format(self.__class__.__name__, _hash)
         utils.info("Branch Name: {}".format(new_branch))
         os.chdir(self.REPO_DIR)
-        if self.check_branch_does_not_exist(new_branch):
+        if local_test or self.check_branch_does_not_exist(new_branch):
             self.add_utility()
             if not local_test:
                 self.configure_git()
@@ -28,9 +28,9 @@ class BaseSplunkAppUtility:
         utils.info("Checking whether git branch already present or not.")
         # ret_code = os.system('git rev-parse --verify {}'.format(branch_name))
         ret_code = os.system('git checkout {}'.format(branch_name))
-        if ret_code != 0:
-            return True
-        return False
+        if ret_code == 0:
+            return False
+        return True
 
 
     def configure_git(self):
