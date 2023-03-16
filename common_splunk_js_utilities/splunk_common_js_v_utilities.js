@@ -4,16 +4,14 @@ define([
     "jquery",
     'splunkjs/mvc/searchmanager',
     "splunkjs/mvc/postprocessmanager",
-    'splunk.util',
-    "js-cookie"
+    'splunk.util'
 ], function (
     mvc,
     _,
     $,
     SearchManager,
     PostProcessSearchManager,
-    splunkUtil,
-    JSCookie
+    splunkUtil
 ) {
 
     class VSearchManagerUtility {
@@ -274,31 +272,12 @@ define([
     }
 
 
-    class VJSCookieManager {
-        setValue(key, value){
-            if (value == undefined) {
-                JSCookie.remove(key);
-            } else {
-                JSCookie.set(key, value);
-            }
-        }
-
-        getValue(key){
-            let value = JSCookie.get(key);
-            if (!value) {
-                value = undefined;
-            }
-            return value;
-        }
-    }
-
     return {
         'VSearchManagerUtility': VSearchManagerUtility,
         'vWaitUntil': vWaitUntil,
         'VTokenManager': VTokenManager,
         'VTokenManagerObj': VTokenManagerObj,
         'vSetupMultiSelectInputHandler': vSetupMultiSelectInputHandler,
-        'vSetupMultiSelectHandlerOnAll': vSetupMultiSelectHandlerOnAll,
-        'VJSCookieManager': VJSCookieManager
+        'vSetupMultiSelectHandlerOnAll': vSetupMultiSelectHandlerOnAll
     }
 });
