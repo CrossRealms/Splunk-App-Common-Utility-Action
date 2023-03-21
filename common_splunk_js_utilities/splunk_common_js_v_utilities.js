@@ -272,7 +272,7 @@ define([
     function vSetupMultiSelectHandlerOnAll() {
         var all_multi_selects = document.getElementsByClassName("input-multiselect");
         for (j = 0; j < all_multi_selects.length; j++) {
-            VSetupMultiSelectInputHandler(all_multi_selects[j].id);
+            vSetupMultiSelectInputHandler(all_multi_selects[j].id);
         }
     }
 
