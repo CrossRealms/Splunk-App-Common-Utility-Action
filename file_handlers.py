@@ -180,6 +180,8 @@ class ConfigFileHandler(BaseFileHandler):
             self.create_output_directory_path_if_not_exist()
             with open(self.output_file_path, 'w') as fp:
                 fp.write(new_content)
+            return True
+        return False
 
 
 
@@ -198,3 +200,5 @@ class RawFileHandler(BaseFileHandler):
             self.create_output_directory_path_if_not_exist()
             with open(self.output_file_path, 'w') as fw:
                 fw.write(input_content)
+            return True
+        return False

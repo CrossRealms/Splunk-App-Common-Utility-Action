@@ -22,12 +22,15 @@ class LoggerUtility(BaseSplunkAppUtility):
             '<<<logger_sourcetype>>>': logger_sourcetype
         }
 
-        self.add_logger_manager_py()
-        self.add_props_content()
+        update1 = self.add_logger_manager_py()
+        update2 = self.add_props_content()
+        if update1 or update2:
+            return True
+        return False
 
 
     def add_logger_manager_py(self):
-        file_handlers.RawFileHandler(
+        return file_handlers.RawFileHandler(
             os.path.join(self.GITHUB_ACTION_DIR, 'logger', 'logger_manager.py'),
             os.path.join(self.APP_PACKAGE_DIR, 'bin', 'logger_manager.py'),
             self.words_for_replacement
@@ -35,7 +38,7 @@ class LoggerUtility(BaseSplunkAppUtility):
 
 
     def add_props_content(self):
-        file_handlers.ConfigFileHandler(
+        return file_handlers.ConfigFileHandler(
             os.path.join(self.GITHUB_ACTION_DIR, 'logger', 'props.conf'),
             os.path.join(self.APP_PACKAGE_DIR, 'default', 'props.conf'),
             self.words_for_replacement

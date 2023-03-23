@@ -14,10 +14,15 @@ class BaseSplunkAppUtility:
         utils.info("Branch Name: {}".format(new_branch))
         os.chdir(self.REPO_DIR)
         if local_test or self.check_branch_does_not_exist(new_branch):
-            self.add_utility()
+            is_any_update = self.add_utility()
             if not local_test:
-                self.configure_git()
-                self.create_github_pr(main_branch_name, new_branch)
+                if is_any_update:
+                    self.configure_git()
+                    self.create_github_pr(main_branch_name, new_branch)
+                else:
+                    utils.info("No changes.")
+            else:
+                utils.info("Local test, ignoring git commit and PR.")
         else:
             utils.info("Branch already present.")
 
