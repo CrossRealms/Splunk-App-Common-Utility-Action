@@ -25,6 +25,124 @@ class BaseFileHandler:
 
 
 
+class VCustomOutputConfigParser:
+    '''
+    NOTE - This is not fully custom ConfigParser, only required functions are overridden as needed.
+    '''
+    def __init__(self, file_path) -> None:
+        self.file_path = file_path
+        if os.path.isfile(file_path):
+            with open(self.file_path, 'r') as file_obj:
+                self.file_content = file_obj.read().splitlines()
+        else:
+            self.file_content = []
+
+
+    def _get_stanza(self, stanza_name):
+        start_line = -1
+        end_line = -1
+
+        searching_for_start = True
+        for line_no in range(len(self.file_content)):
+            line = self.file_content[line_no]
+            if not line and line != "":
+                if not searching_for_start:
+                    end_line = line_no - 1
+                break
+
+            line = line.strip()
+            if line.strip().startswith('#'):   # comment, ignore
+                continue
+
+            if searching_for_start and line == '[{}]'.format(stanza_name):
+                start_line = line_no
+                searching_for_start = False
+
+            elif not searching_for_start and line.startswith('[') and line.endswith(']'):
+                end_line = line_no - 1
+                return start_line, end_line
+
+        return start_line, end_line
+
+
+    def _get_attribute_line_no(self, key_to_search, start_line_no, end_line_no):
+        _start_line_no = 0
+        if start_line_no >= 0:
+            _start_line_no = start_line_no
+        
+        if end_line_no >= 0:
+            _end_line_no = end_line_no
+        else:
+            _end_line_no = len(self.file_content)
+
+        for _line_no in range(_start_line_no, _end_line_no):
+            _key, _value = self._get_key_value(self.file_content[_line_no])
+            if _key == key_to_search:
+                return _line_no
+
+        return None
+
+
+    def _get_key_value(self, line_content):
+        _key = line_content.split("=")[0].strip()
+        _value = "".join(line_content.split("=")[1:]).strip()
+        return _key, _value
+
+
+    def replace_content_with_input_parser(self, input_parser: configparser.ConfigParser):
+        new_stanzas = []
+
+        for sect in input_parser.sections():
+            start_line_no, end_line_no = self._get_stanza(sect)
+
+            if start_line_no >= 0:
+                # For existing stanza
+
+                new_key_value_pairs = []
+
+                for key, value in input_parser.items(sect):
+                    # print("stanza={} - key={} - value={}".format(sect, key, value))
+                    line_no_to_update = self._get_attribute_line_no(key, start_line_no, end_line_no)
+                    
+                    if line_no_to_update:
+                        # For existing attributes
+                        self.file_content[line_no_to_update] = '{} = {}'.format(key, value)
+                    else:
+                        # For new attributes
+                        new_key_value_pairs.append((key, value))
+
+                # For new attributes
+                line_no_to_update = end_line_no
+
+                # Move up and add content above all comments and empty lines
+                while True:
+                    line = self.file_content[line_no_to_update].strip()
+                    if line == '' or line.startswith("#"):
+                        line_no_to_update -= 1
+                        continue
+                    break
+
+                for new_key, new_value in new_key_value_pairs:
+                    line_no_to_update += 1
+                    self.file_content.insert(line_no_to_update, '{} = {}'.format(new_key, new_value))
+
+            else:
+                # For new stanzas
+                new_stanzas.append(sect)
+
+        # For new stanzas
+        new_content = []
+        for new_sect in new_stanzas:
+            new_content.append('')
+            new_content.append('[{}]'.format(new_sect))
+            
+            for key, value in input_parser.items(new_sect):
+                new_content.append('{} = {}'.format(key, value))
+        
+        self.file_content.extend(new_content)
+
+
+
 
 class ConfigFileHandler(BaseFileHandler):
 
@@ -35,7 +153,7 @@ class ConfigFileHandler(BaseFileHandler):
 
 
     def get_config_parser_object(self):
-        config = configparser.ConfigParser(interpolation=None, comment_prefixes='#', allow_no_value=True)
+        config = configparser.ConfigParser(interpolation=None)
         # config.optionxform = str
         # comment_prefixes='#', allow_no_value=True --> to avoid removing comments from the file
         config.optionxform = lambda option: option
@@ -51,30 +169,17 @@ class ConfigFileHandler(BaseFileHandler):
         input_parser = self.get_config_parser_object()
         input_parser.read(temp_file)
 
-        output_parser = self.get_config_parser_object()
-        if os.path.isfile(self.output_file_path):
-            output_parser.read(self.output_file_path)
+        output_parser = VCustomOutputConfigParser(self.output_file_path)
+        existing_content = "\n".join(output_parser.file_content)
 
-        is_changed = False
+        output_parser.replace_content_with_input_parser(input_parser)
+        new_content = "\n".join(output_parser.file_content)
 
-        for sect in input_parser.sections():
-            for key, value in input_parser.items(sect):
-                # print("stanza={} - key={} - value={}".format(sect, key, value))
-                try:
-                    already_present_value = output_parser.get(sect, key)
-                    if already_present_value != value:
-                        is_changed = True
-                        self._util_write_config_option(output_parser, sect, key, value)
-                except:
-                    is_changed = True
-                    self._util_write_config_option(output_parser, sect, key, value)
-        
-        if is_changed:
+        if existing_content != new_content:
             print("File changed - file={}".format(self.output_file_path))
             self.create_output_directory_path_if_not_exist()
-            fp=open(self.output_file_path, 'w')
-            output_parser.write(fp)
-            fp.close()
+            with open(self.output_file_path, 'w') as fp:
+                fp.write(new_content)
 
 
 
