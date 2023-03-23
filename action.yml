@@ -7,6 +7,11 @@ branding:
 
 
 inputs:
+  GH_TOKEN:
+    description: "GitHub Secret Token to automatically create Pull request. (Make sure to put it in the Repo secret on GitHub.)"
+    required: true
+
+
   app_dir:
     description: "Provide app directory. Do not provide the value if the repo's root directory itself if app directory."
     required: false
