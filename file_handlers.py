@@ -35,8 +35,9 @@ class ConfigFileHandler(BaseFileHandler):
 
 
     def get_config_parser_object(self):
-        config = configparser.ConfigParser(interpolation=None)
+        config = configparser.ConfigParser(interpolation=None, comment_prefixes='#', allow_no_value=True)
         # config.optionxform = str
+        # comment_prefixes='#', allow_no_value=True --> to avoid removing comments from the file
         config.optionxform = lambda option: option
         return config
 
